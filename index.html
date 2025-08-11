@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Precifica Pro – Hub Business v2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease-in-out;
+        }
+        .btn-primary {
+            background-color: #4f46e5;
+            color: white;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary:hover {
+            background-color: #4338ca;
+        }
+        .btn-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-secondary:hover {
+            background-color: #d1d5db;
+        }
+        .input-field {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
+        }
+        #results-section, .dynamic-fields {
+            display: none;
+        }
+        .radio-label {
+            padding: 0.75rem 1.25rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            font-weight: 500;
+        }
+        input[type="radio"]:checked + .radio-label {
+            background-color: #eef2ff;
+            border-color: #4f46e5;
+            color: #4f46e5;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 md:p-8 max-w-5xl">
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900">Precifica Pro</h1>
+            <p class="text-lg text-gray-600 mt-2">Seu Hub Business para precificação inteligente e estratégica.</p>
+        </header>
+
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Coluna de Inputs -->
+            <div class="lg:col-span-2">
+                <div class="card p-6 md:p-8">
+                    <h2 class="text-2xl font-bold mb-6">Calculadora de Preços</h2>
+                    <form id="pricing-form" class="space-y-6">
+                        <!-- Tipo de Negócio -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">1. Qual o seu tipo de negócio?</label>
+                            <div class="grid grid-cols-3 gap-4">
+                                <input type="radio" name="business-type" id="type-product" value="product" class="sr-only">
+                                <label for="type-product" class="radio-label">📦 Produto</label>
+
+                                <input type="radio" name="business-type" id="type-service" value="service" class="sr-only">
+                                <label for="type-service" class="radio-label">💼 Serviço</label>
+
+                                <input type="radio" name="business-type" id="type-industry" value="industry" class="sr-only">
+                                <label for="type-industry" class="radio-label">🏭 Indústria</label>
+                            </div>
+                        </div>
+
+                        <!-- Campos Dinâmicos -->
+                        <div id="main-fields" class="space-y-6 dynamic-fields">
+                            <div>
+                                <label for="product-name" class="block text-sm font-medium text-gray-700 mb-1">Nome do Produto/Serviço</label>
+                                <input type="text" id="product-name" class="input-field" placeholder="Ex: Consultoria de Marketing" required>
+                            </div>
+                            
+                            <div>
+                                <label for="industry-sector" class="block text-sm font-medium text-gray-700 mb-1">Ramo de Atuação</label>
+                                <select id="industry-sector" class="input-field bg-white" required>
+                                    <option value="" disabled selected>Selecione um setor</option>
+                                    <option value="varejo">Varejo (Geral)</option>
+                                    <option value="alimentacao">Alimentação (Restaurantes, Cafés)</option>
+                                    <option value="tecnologia">Tecnologia (SaaS, Serviços de TI)</option>
+                                    <option value="saude">Saúde e Bem-estar</option>
+                                    <option value="consultoria">Serviços Profissionais (Consultoria, Agências)</option>
+                                    <option value="industria">Indústria (Manufatura)</option>
+                                    <option value="outro">Outro</option>
+                                </select>
+                            </div>
+
+                            <!-- Custos Fixos para Serviço/Indústria -->
+                            <div id="fixed-costs-section" class="space-y-4 p-4 bg-gray-50 rounded-lg border dynamic-fields">
+                                <h3 class="font-semibold text-gray-800">Custos Fixos Mensais</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div>
+                                        <label for="fixed-costs" class="block text-sm font-medium text-gray-700 mb-1">Total dos Custos Fixos (R$)</label>
+                                        <input type="number" id="fixed-costs" class="input-field" placeholder="Aluguel, salários, etc." step="0.01">
+                                    </div>
+                                    <div>
+                                        <label for="monthly-units" class="block text-sm font-medium text-gray-700 mb-1">Nº de Serviços/Peças (mês)</label>
+                                        <input type="number" id="monthly-units" class="input-field" placeholder="Ex: 100" step="1">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label for="unit-cost" class="block text-sm font-medium text-gray-700 mb-1">Custo Direto Unitário (R$)</label>
+                                    <input type="number" id="unit-cost" class="input-field" placeholder="Matéria-prima, mercadoria" step="0.01" required>
+                                </div>
+                                <div>
+                                    <label for="sale-price" class="block text-sm font-medium text-gray-700 mb-1">Preço Final de Venda (R$)</label>
+                                    <input type="number" id="sale-price" class="input-field" placeholder="Ex: 150,00" step="0.01" required>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                                <div>
+                                    <label for="additional-expenses" class="block text-sm font-medium text-gray-700 mb-1">Despesas Variáveis Unitárias</label>
+                                    <input type="number" id="additional-expenses" class="input-field" placeholder="Comissão, frete, embalagem" step="0.01" required>
+                                </div>
+                                <div>
+                                    <select id="expense-type" class="input-field bg-white">
+                                        <option value="percent">% (sobre a venda)</option>
+                                        <option value="value">R$ (valor fixo)</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label for="taxes" class="block text-sm font-medium text-gray-700 mb-1">Impostos sobre a Venda (%)</label>
+                                <input type="number" id="taxes" class="input-field" placeholder="Ex: 8" step="0.01" required>
+                            </div>
+
+                            <div class="flex flex-col sm:flex-row gap-4 pt-4">
+                                <button type="submit" class="btn-primary w-full sm:w-auto">Calcular</button>
+                                <button type="button" id="clear-btn" class="btn-secondary w-full sm:w-auto">Limpar</button>
+                                <button type="button" id="sim-btn" class="btn-primary bg-green-600 hover:bg-green-700 w-full sm:w-auto">Modo Simulação</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Coluna de Histórico -->
+            <aside>
+                <div class="card p-6">
+                    <h3 class="text-xl font-bold mb-4">Histórico</h3>
+                    <div id="history-list" class="space-y-3">
+                        <p class="text-gray-500 italic">Nenhum cálculo recente.</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Seção de Resultados -->
+        <section id="results-section" class="mt-8">
+            <div class="card p-6 md:p-8">
+                 <div class="flex justify-between items-start">
+                    <h2 class="text-2xl font-bold mb-2">Análise de Precificação: <span id="result-product-name" class="text-indigo-600"></span></h2>
+                    <button id="export-pdf-btn" class="btn-secondary text-sm !py-2 !px-4">Exportar PDF</button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6 text-center">
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="text-sm font-semibold text-gray-600">MARGEM DE LUCRO</h4>
+                        <p id="profit-margin-percent" class="text-3xl font-bold text-green-600"></p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="text-sm font-semibold text-gray-600">LUCRO BRUTO (R$)</h4>
+                        <p id="profit-margin-value" class="text-3xl font-bold text-green-600"></p>
+                    </div>
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="text-sm font-semibold text-gray-600">MARKUP</h4>
+                        <p id="markup-percent" class="text-3xl font-bold text-blue-600"></p>
+                    </div>
+                     <div class="bg-gray-50 p-4 rounded-lg">
+                        <h4 class="text-sm font-semibold text-gray-600">CUSTO TOTAL UNIT. (R$)</h4>
+                        <p id="total-cost-value" class="text-3xl font-bold text-red-600"></p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-8">
+                    <!-- Detalhamento do Cálculo -->
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">Entenda o Cálculo</h3>
+                        <div id="calculation-explanation" class="space-y-3 text-gray-700"></div>
+                    </div>
+
+                    <!-- Insights Estratégicos -->
+                    <div>
+                        <h3 class="text-xl font-bold mb-4">Insights Estratégicos 💡</h3>
+                        <div id="strategic-insights" class="space-y-3 p-4 bg-indigo-50 rounded-lg border border-indigo-200"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Modal de Simulação -->
+        <div id="simulation-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden items-center justify-center p-4 z-50">
+            <div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full">
+                <h2 class="text-2xl font-bold mb-4">Modo Simulação</h2>
+                <p class="mb-6 text-gray-600">Teste diferentes preços de venda para ver o impacto na sua margem de lucro.</p>
+                
+                <div class="mb-6">
+                    <label for="sim-sale-price" class="block text-sm font-medium text-gray-700 mb-2">Novo Preço de Venda (R$)</label>
+                    <input type="range" id="sim-sale-price" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer" min="1" max="1000" step="1">
+                    <div class="flex justify-between text-sm text-gray-600 mt-2">
+                        <span id="sim-min-price">R$ 1</span>
+                        <span class="font-bold text-lg text-indigo-600" id="sim-current-price">R$ 500</span>
+                        <span id="sim-max-price">R$ 1000</span>
+                    </div>
+                </div>
+
+                <div class="text-center bg-gray-50 p-4 rounded-lg">
+                    <h4 class="text-sm font-semibold text-gray-600">NOVA MARGEM DE LUCRO</h4>
+                    <p id="sim-profit-margin" class="text-4xl font-bold text-green-600 mt-2"></p>
+                </div>
+                
+                <div class="mt-8 flex justify-end gap-4">
+                    <button id="close-sim-modal" class="btn-secondary">Fechar</button>
+                    <button id="apply-sim-price" class="btn-primary">Aplicar este Preço</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('pricing-form');
+            const businessTypeRadios = document.querySelectorAll('input[name="business-type"]');
+            const mainFields = document.getElementById('main-fields');
+            const fixedCostsSection = document.getElementById('fixed-costs-section');
+            
+            const clearBtn = document.getElementById('clear-btn');
+            const resultsSection = document.getElementById('results-section');
+            const historyList = document.getElementById('history-list');
+            const exportPdfBtn = document.getElementById('export-pdf-btn');
+            const simBtn = document.getElementById('sim-btn');
+            const simModal = document.getElementById('simulation-modal');
+            const closeSimModalBtn = document.getElementById('close-sim-modal');
+            const applySimPriceBtn = document.getElementById('apply-sim-price');
+            const simSalePriceSlider = document.getElementById('sim-sale-price');
+            const simCurrentPriceDisplay = document.getElementById('sim-current-price');
+
+            let calculationHistory = JSON.parse(localStorage.getItem('pricingHistory_v2')) || [];
+            let currentInputs = {};
+
+            const marketMargins = {
+                varejo: { min: 20, max: 40, avg: 30, name: "Varejo" },
+                alimentacao: { min: 15, max: 35, avg: 25, name: "Alimentação" },
+                tecnologia: { min: 30, max: 70, avg: 50, name: "Tecnologia" },
+                saude: { min: 25, max: 50, avg: 37.5, name: "Saúde e Bem-estar" },
+                consultoria: { min: 40, max: 80, avg: 60, name: "Serviços Profissionais" },
+                industria: { min: 15, max: 30, avg: 22.5, name: "Indústria" },
+                outro: { min: 10, max: 50, avg: 30, name: "mercado" }
+            };
+
+            // UI Control
+            businessTypeRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    const type = e.target.value;
+                    mainFields.style.display = 'block';
+                    if (type === 'service' || type === 'industry') {
+                        fixedCostsSection.style.display = 'block';
+                    } else {
+                        fixedCostsSection.style.display = 'none';
+                    }
+                });
+            });
+
+            // Calculation Logic
+            const calculateResults = (inputs) => {
+                const { businessType, unitCost, salePrice, additionalExpenses, expenseType, taxes, fixedCosts, monthlyUnits } = inputs;
+
+                let fixedCostPerUnit = 0;
+                if (businessType !== 'product' && fixedCosts > 0 && monthlyUnits > 0) {
+                    fixedCostPerUnit = fixedCosts / monthlyUnits;
+                }
+
+                let expenseValue = 0;
+                if (expenseType === 'percent') {
+                    expenseValue = salePrice * (additionalExpenses / 100);
+                } else {
+                    expenseValue = additionalExpenses;
+                }
+
+                const taxValue = salePrice * (taxes / 100);
+                const totalCost = unitCost + expenseValue + taxValue + fixedCostPerUnit;
+                const profitValue = salePrice - totalCost;
+                const profitMargin = (salePrice > 0) ? (profitValue / salePrice) * 100 : 0;
+                const markup = (totalCost > 0) ? (profitValue / totalCost) * 100 : 0;
+
+                return {
+                    totalCost: totalCost.toFixed(2),
+                    profitValue: profitValue.toFixed(2),
+                    profitMargin: profitMargin.toFixed(2),
+                    markup: markup.toFixed(2),
+                    taxValue: taxValue.toFixed(2),
+                    expenseValue: expenseValue.toFixed(2),
+                    fixedCostPerUnit: fixedCostPerUnit.toFixed(2)
+                };
+            };
+
+            // Display Functions
+            const displayResults = (inputs, results) => {
+                document.getElementById('result-product-name').textContent = inputs.productName;
+                document.getElementById('profit-margin-percent').textContent = `${results.profitMargin}%`;
+                document.getElementById('profit-margin-value').textContent = `R$ ${results.profitValue}`;
+                document.getElementById('markup-percent').textContent = `${results.markup}%`;
+                document.getElementById('total-cost-value').textContent = `R$ ${results.totalCost}`;
+                
+                displayExplanation(inputs, results);
+                displayInsights(inputs, results);
+
+                resultsSection.style.display = 'block';
+                resultsSection.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            const displayExplanation = (inputs, results) => {
+                const explanationContainer = document.getElementById('calculation-explanation');
+                let fixedCostHTML = '';
+                if (inputs.businessType !== 'product' && parseFloat(results.fixedCostPerUnit) > 0) {
+                    fixedCostHTML = `<li>Custo Fixo por Unidade: R$ ${results.fixedCostPerUnit}</li>`;
+                }
+
+                explanationContainer.innerHTML = `
+                    <p>1. <strong>Custo Total Unitário:</strong> Somamos todos os custos e despesas por unidade.</p>
+                    <ul class="list-disc list-inside pl-4 text-sm bg-gray-50 p-3 rounded-md">
+                        <li>Custo Direto: R$ ${inputs.unitCost.toFixed(2)}</li>
+                        ${fixedCostHTML}
+                        <li>Despesas Variáveis: R$ ${results.expenseValue}</li>
+                        <li>Impostos (${inputs.taxes}%): R$ ${results.taxValue}</li>
+                        <li class="font-bold">Total = R$ ${results.totalCost}</li>
+                    </ul>
+                    <p>2. <strong>Lucro Bruto:</strong> Subtraímos o custo total do preço de venda.</p>
+                     <ul class="list-disc list-inside pl-4 text-sm bg-gray-50 p-3 rounded-md">
+                        <li>Preço de Venda: R$ ${inputs.salePrice.toFixed(2)}</li>
+                        <li>Custo Total: - R$ ${results.totalCost}</li>
+                        <li class="font-bold">Lucro = R$ ${results.profitValue}</li>
+                    </ul>
+                    <p>3. <strong>Margem de Lucro (%):</strong> É o lucro dividido pelo preço de venda. Mostra a rentabilidade real da venda.</p>
+                    <p>4. <strong>Markup (%):</strong> É o lucro dividido pelo custo total. Usado para formar o preço a partir do custo.</p>
+                `;
+            };
+
+            const displayInsights = (inputs, results) => {
+                const insightsContainer = document.getElementById('strategic-insights');
+                const margin = parseFloat(results.profitMargin);
+                const sector = marketMargins[inputs.industrySector];
+                let insightsHTML = '';
+
+                // Insight de comparação com o mercado
+                if (sector) {
+                    let comparisonText = '';
+                    if (margin < sector.min) {
+                        comparisonText = `abaixo da média para o setor de ${sector.name}, que costuma variar entre ${sector.min}% e ${sector.max}%.`;
+                    } else if (margin > sector.max) {
+                        comparisonText = `acima da média para o setor de ${sector.name} (entre ${sector.min}% e ${sector.max}%). Excelente posicionamento!`;
+                    } else {
+                        comparisonText = `dentro da média para o setor de ${sector.name} (entre ${sector.min}% e ${sector.max}%). Bom trabalho!`;
+                    }
+                    insightsHTML += `<div class="p-3 rounded-md bg-blue-100 border border-blue-200"><strong>Análise de Mercado:</strong> Sua margem de ${margin.toFixed(2)}% está ${comparisonText}</div>`;
+                }
+
+                // Insight geral sobre a margem
+                if (margin < 10) {
+                    insightsHTML += `<div class="p-3 rounded-md bg-red-100 border border-red-200"><strong>Alerta:</strong> Uma margem de lucro muito baixa pode ser arriscada. Revise todos os seus custos e considere se o seu preço reflete o valor que você entrega.</div>`;
+                } else if (margin >= 10 && margin < 20) {
+                    insightsHTML += `<div class="p-3 rounded-md bg-yellow-100 border border-yellow-200"><strong>Atenção:</strong> Sua margem é funcional, mas pode não ser suficiente para cobrir imprevistos ou para reinvestir no crescimento. Busque otimizações.</div>`;
+                } else {
+                    insightsHTML += `<div class="p-3 rounded-md bg-green-100 border border-green-200"><strong>Ótimo Resultado:</strong> Sua margem de lucro é saudável, indicando uma boa relação entre custos e preço. Continue monitorando!</div>`;
+                }
+
+                // Dicas adicionais
+                insightsHTML += `
+                    <p><strong>Dica Estratégica:</strong> Se sua margem está apertada, avalie agregar mais valor percebido ao seu produto/serviço para justificar um preço maior, em vez de apenas cortar custos.</p>
+                    <p><strong>Lembrete:</strong> Este cálculo é do lucro bruto. Não se esqueça de considerar outras despesas operacionais (marketing, administrativas) para entender seu lucro líquido final.</p>
+                `;
+                insightsContainer.innerHTML = insightsHTML;
+            };
+
+            const updateHistory = () => {
+                historyList.innerHTML = '';
+                if (calculationHistory.length === 0) {
+                    historyList.innerHTML = '<p class="text-gray-500 italic">Nenhum cálculo recente.</p>';
+                    return;
+                }
+                const reversedHistory = [...calculationHistory].reverse();
+                reversedHistory.forEach(item => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'p-3 bg-gray-50 rounded-md cursor-pointer hover:bg-gray-100 border border-gray-200';
+                    historyItem.innerHTML = `
+                        <p class="font-semibold text-sm">${item.inputs.productName}</p>
+                        <p class="text-xs text-gray-600">Margem: <span class="font-bold text-green-700">${item.results.profitMargin}%</span> | Preço: R$ ${parseFloat(item.inputs.salePrice).toFixed(2)}</p>
+                    `;
+                    historyItem.onclick = () => loadFromHistory(item);
+                    historyList.appendChild(historyItem);
+                });
+            };
+            
+            const loadFromHistory = (item) => {
+                // Set business type and trigger change
+                const radio = document.getElementById(`type-${item.inputs.businessType}`);
+                if(radio) {
+                    radio.checked = true;
+                    radio.dispatchEvent(new Event('change'));
+                }
+                
+                // Use setTimeout to allow the UI to update before filling fields
+                setTimeout(() => {
+                    document.getElementById('product-name').value = item.inputs.productName;
+                    document.getElementById('industry-sector').value = item.inputs.industrySector;
+                    document.getElementById('unit-cost').value = item.inputs.unitCost;
+                    document.getElementById('sale-price').value = item.inputs.salePrice;
+                    document.getElementById('additional-expenses').value = item.inputs.additionalExpenses;
+                    document.getElementById('expense-type').value = item.inputs.expenseType;
+                    document.getElementById('taxes').value = item.inputs.taxes;
+
+                    if (item.inputs.businessType !== 'product') {
+                        document.getElementById('fixed-costs').value = item.inputs.fixedCosts;
+                        document.getElementById('monthly-units').value = item.inputs.monthlyUnits;
+                    }
+                    
+                    displayResults(item.inputs, item.results);
+                }, 100);
+            };
+
+            const saveToHistory = (inputs, results) => {
+                const historyEntry = { inputs, results, timestamp: new Date() };
+                calculationHistory.push(historyEntry);
+                if (calculationHistory.length > 5) {
+                    calculationHistory.shift();
+                }
+                localStorage.setItem('pricingHistory_v2', JSON.stringify(calculationHistory));
+                updateHistory();
+            };
+
+            const clearForm = () => {
+                form.reset();
+                mainFields.style.display = 'none';
+                fixedCostsSection.style.display = 'none';
+                resultsSection.style.display = 'none';
+                document.querySelector('input[name="business-type"]:checked')?.focus();
+            };
+            
+            // Event Listeners
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                currentInputs = {
+                    businessType: document.querySelector('input[name="business-type"]:checked').value,
+                    productName: document.getElementById('product-name').value,
+                    industrySector: document.getElementById('industry-sector').value,
+                    unitCost: parseFloat(document.getElementById('unit-cost').value) || 0,
+                    salePrice: parseFloat(document.getElementById('sale-price').value) || 0,
+                    additionalExpenses: parseFloat(document.getElementById('additional-expenses').value) || 0,
+                    expenseType: document.getElementById('expense-type').value,
+                    taxes: parseFloat(document.getElementById('taxes').value) || 0,
+                    fixedCosts: parseFloat(document.getElementById('fixed-costs').value) || 0,
+                    monthlyUnits: parseFloat(document.getElementById('monthly-units').value) || 0,
+                };
+
+                if (currentInputs.salePrice <= 0) {
+                    alert('O Preço de Venda deve ser maior que zero.');
+                    return;
+                }
+
+                const results = calculateResults(currentInputs);
+                displayResults(currentInputs, results);
+                saveToHistory(currentInputs, results);
+            });
+
+            clearBtn.addEventListener('click', clearForm);
+
+            exportPdfBtn.addEventListener('click', () => {
+                const resultsContent = document.getElementById('results-section');
+                const productName = document.getElementById('result-product-name').textContent;
+                
+                html2canvas(resultsContent, { scale: 2 }).then(canvas => {
+                    const imgData = canvas.toDataURL('image/png');
+                    const { jsPDF } = window.jspdf;
+                    const pdf = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
+
+                    const pdfWidth = pdf.internal.pageSize.getWidth();
+                    const canvasWidth = canvas.width;
+                    const canvasHeight = canvas.height;
+                    const ratio = canvasWidth / canvasHeight;
+                    const imgWidth = pdfWidth - 20;
+                    const imgHeight = imgWidth / ratio;
+                    
+                    pdf.setFont('Inter', 'normal');
+                    pdf.text(`Análise de Precificação - ${productName}`, 10, 15);
+                    pdf.addImage(imgData, 'PNG', 10, 25, imgWidth, imgHeight);
+                    pdf.save(`Precificacao-${productName.replace(/ /g, '_')}.pdf`);
+                });
+            });
+
+            simBtn.addEventListener('click', () => {
+                form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+                
+                if (!currentInputs.salePrice) {
+                    alert('Por favor, preencha os dados e calcule primeiro para usar a simulação.');
+                    return;
+                }
+
+                const currentPrice = parseFloat(currentInputs.salePrice);
+                const minPrice = Math.max(1, Math.floor(currentPrice * 0.5));
+                const maxPrice = Math.ceil(currentPrice * 2);
+
+                simSalePriceSlider.min = minPrice;
+                simSalePriceSlider.max = maxPrice;
+                simSalePriceSlider.value = currentPrice;
+                
+                document.getElementById('sim-min-price').textContent = `R$ ${minPrice}`;
+                document.getElementById('sim-max-price').textContent = `R$ ${maxPrice}`;
+
+                updateSimulationView(currentPrice);
+                simModal.classList.remove('hidden');
+                simModal.classList.add('flex');
+            });
+
+            const updateSimulationView = (newSalePrice) => {
+                simCurrentPriceDisplay.textContent = `R$ ${parseFloat(newSalePrice).toFixed(2)}`;
+                const simInputs = { ...currentInputs, salePrice: parseFloat(newSalePrice) };
+                const simResults = calculateResults(simInputs);
+                document.getElementById('sim-profit-margin').textContent = `${simResults.profitMargin}%`;
+            };
+
+            simSalePriceSlider.addEventListener('input', (e) => updateSimulationView(e.target.value));
+            closeSimModalBtn.addEventListener('click', () => simModal.classList.add('hidden'));
+            
+            applySimPriceBtn.addEventListener('click', () => {
+                const newPrice = simSalePriceSlider.value;
+                document.getElementById('sale-price').value = parseFloat(newPrice).toFixed(2);
+                simModal.classList.add('hidden');
+                form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            });
+
+            // Initialization
+            updateHistory();
+        });
+    </script>
+</body>
+</html>
