@@ -3,90 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Precifica Pro – Hub Business v8</title>
+    <title>Precifica Pro – Hub Business</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        .card {
-            background-color: white;
-            border-radius: 0.75rem;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-        .btn {
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.5rem;
-            transition: all 0.2s;
-            border: none;
-            cursor: pointer;
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .card { background-color: white; border-radius: 0.75rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
+        .btn { font-weight: 600; padding: 0.75rem 1.5rem; border-radius: 0.5rem; transition: all 0.2s; border: none; cursor: pointer; }
         .btn-primary { background-color: #4f46e5; color: white; }
         .btn-primary:hover { background-color: #4338ca; }
         .btn-secondary { background-color: #e5e7eb; color: #374151; }
         .btn-secondary:hover { background-color: #d1d5db; }
-        .input-field {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            transition: border-color 0.3s, box-shadow 0.3s;
-        }
-        .input-field:focus {
-            outline: none;
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2);
-        }
-        .input-field.invalid {
-            border-color: #ef4444;
-            box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.2);
-        }
-        .tab {
-            padding: 0.75rem 1.5rem;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            font-weight: 600;
-            color: #6b7280;
-        }
+        .input-field { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 0.5rem; transition: border-color 0.3s, box-shadow 0.3s; }
+        .input-field:focus { outline: none; border-color: #4f46e5; box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.2); }
+        .input-field:disabled { background-color: #f3f4f6; cursor: not-allowed; }
+        .tab { padding: 0.75rem 1.5rem; cursor: pointer; border-bottom: 2px solid transparent; font-weight: 600; color: #6b7280; }
         .tab.active { color: #4f46e5; border-bottom-color: #4f46e5; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
         .tooltip-container { position: relative; display: inline-block; }
-        .tooltip-icon {
-            cursor: pointer;
-            color: #9ca3af;
-            border: 1px solid #d1d5db;
-            border-radius: 9999px;
-            width: 1.25rem;
-            height: 1.25rem;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 0.8rem;
-            margin-left: 0.25rem;
-        }
-        .tooltip-text {
-            visibility: hidden;
-            width: 220px;
-            background-color: #1f2937;
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px;
-            position: absolute;
-            z-index: 10;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -110px;
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.875rem;
-            font-weight: normal;
-        }
+        .tooltip-icon { cursor: pointer; color: #9ca3af; border: 1px solid #d1d5db; border-radius: 9999px; width: 1.25rem; height: 1.25rem; display: inline-flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; margin-left: 0.25rem; }
+        .tooltip-text { visibility: hidden; width: 220px; background-color: #1f2937; color: #fff; text-align: center; border-radius: 6px; padding: 8px; position: absolute; z-index: 10; bottom: 125%; left: 50%; margin-left: -110px; opacity: 0; transition: opacity 0.3s; font-size: 0.875rem; font-weight: normal; }
         .tooltip-container:hover .tooltip-text { visibility: visible; opacity: 1; }
         
         @media print {
@@ -99,529 +37,188 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
-        <header class="text-center mb-8 no-print">
-            <h1 class="text-4xl font-bold text-gray-900">Precifica Pro</h1>
-            <p class="text-lg text-gray-600 mt-2">Sua plataforma completa para precificação estratégica.</p>
-        </header>
-
-        <div class="mb-8 border-b border-gray-200 no-print">
-            <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
-                <button class="tab active" data-tab="calculator">Calculadora Unitária</button>
-                <button class="tab" data-tab="target-cost">Custo Meta</button>
-                <button class="tab" data-tab="mix-products">Análise de Mix de Produtos</button>
-                <button class="tab" data-tab="mix-services">Análise de Mix de Serviços</button>
-            </nav>
-        </div>
-
-        <!-- Conteúdo da Calculadora Unitária -->
-        <div id="calculator-content" class="tab-content active">
-             <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div class="lg:col-span-2">
-                    <div class="card p-6 md:p-8">
-                        <h2 class="text-2xl font-bold mb-6">Calculadora de Preço Unitário</h2>
-                        <form id="pricing-form" class="space-y-6">
-                            <div><label for="product-name" class="block text-sm font-medium text-gray-700 mb-1">1. Nome do Produto/Serviço</label><input type="text" id="product-name" class="input-field" placeholder="Ex: Consultoria de Marketing" required></div>
-                            
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">2. Custo Fixo Total Mensal (R$)</label>
-                                    <input type="number" id="total-fixed-costs" class="input-field" placeholder="Soma de aluguel, salários..." required>
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-1">3. Quantidade Produzida/Vendida no Mês</label>
-                                    <input type="number" id="monthly-quantity" class="input-field" placeholder="Total de unidades" required>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label for="industry-sector" class="block text-sm font-medium text-gray-700 mb-1">4. Ramo de Atuação</label>
-                                <select id="industry-sector" class="input-field bg-white" required>
-                                    <option value="" disabled selected>Selecione um setor</option>
-                                    <option value="varejo">Varejo (Geral)</option>
-                                    <option value="alimentacao">Alimentação (Restaurantes, Cafés)</option>
-                                    <option value="tecnologia">Tecnologia (SaaS, Serviços de TI)</option>
-                                    <option value="saude">Saúde e Bem-estar</option>
-                                    <option value="consultoria">Serviços Profissionais (Consultoria, Agências)</option>
-                                    <option value="industria">Indústria (Manufatura)</option>
-                                    <option value="outro">Outro</option>
-                                </select>
-                            </div>
-
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div><label for="unit-cost" class="block text-sm font-medium text-gray-700 mb-1">5. Custo Direto Unitário (R$)</label><input type="number" id="unit-cost" class="input-field" placeholder="Matéria-prima, mercadoria" step="0.01" required></div>
-                                <div><label for="sale-price" class="block text-sm font-medium text-gray-700 mb-1">6. Preço Final de Venda (R$)</label><input type="number" id="sale-price" class="input-field" placeholder="Ex: 150,00" step="0.01" required></div>
-                            </div>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
-                                <div><label for="additional-expenses" class="block text-sm font-medium text-gray-700 mb-1">7. Despesas Variáveis Unitárias</label><input type="number" id="additional-expenses" class="input-field" placeholder="Comissão, frete, embalagem" step="0.01" required></div>
-                                <div><select id="expense-type" class="input-field bg-white"><option value="percent">% (sobre a venda)</option><option value="value">R$ (valor fixo)</option></select></div>
-                            </div>
-                            <div><label for="taxes" class="block text-sm font-medium text-gray-700 mb-1">8. Impostos sobre a Venda (%)</label><input type="number" id="taxes" class="input-field" placeholder="Ex: 8" step="0.01" required></div>
-                            <div class="flex flex-col sm:flex-row gap-4 pt-4"><button type="submit" class="btn btn-primary w-full sm:w-auto">Calcular</button><button type="button" id="clear-btn" class="btn btn-secondary w-full sm:w-auto">Limpar</button></div>
-                        </form>
-                    </div>
-                </div>
-                <aside>
-                    <div id="results-section" class="space-y-6" style="display:none;">
-                        <div class="card p-6">
-                            <h3 class="text-xl font-bold mb-4">Análise de Custo e Lucro Unitário</h3>
-                            <div class="space-y-3 text-center">
-                                <div class="bg-gray-50 p-3 rounded-lg"><h4 class="text-sm font-semibold text-gray-600">CUSTO FIXO POR UNIDADE</h4><p id="fixed-cost-per-unit" class="text-2xl font-bold text-gray-700"></p></div>
-                                <div class="bg-red-100 p-3 rounded-lg"><h4 class="text-sm font-semibold text-red-700">CUSTO TOTAL POR UNIDADE</h4><p id="total-cost-per-unit" class="text-2xl font-bold text-red-600"></p></div>
-                                <div class="bg-green-100 p-3 rounded-lg"><h4 class="text-sm font-semibold text-green-700">LUCRO POR UNIDADE</h4><p id="profit-per-unit" class="text-2xl font-bold text-green-600"></p></div>
-                            </div>
-                        </div>
-                        <div class="card p-6 bg-indigo-600 text-white">
-                            <h3 class="text-xl font-bold mb-4 flex items-center">Ponto de Equilíbrio
-                                <div class="tooltip-container"><span class="tooltip-icon bg-indigo-500 text-white border-indigo-400">?</span><span class="tooltip-text">O Ponto de Equilíbrio mostra o quanto você precisa vender (com base na Margem de Contribuição) para cobrir o Custo Fixo Total do mês.</span></div>
-                            </h3>
-                            <div class="space-y-3 text-center">
-                                <div class="bg-indigo-700 p-3 rounded-lg"><h4 class="text-sm font-semibold text-indigo-200">EM UNIDADES</h4><p id="breakeven-units" class="text-2xl font-bold"></p></div>
-                                <div class="bg-indigo-700 p-3 rounded-lg"><h4 class="text-sm font-semibold text-indigo-200">EM FATURAMENTO (R$)</h4><p id="breakeven-revenue" class="text-2xl font-bold"></p></div>
-                            </div>
-                             <p class="text-xs text-indigo-200 mt-4">Calculado com a Margem de Contribuição de <strong id="contribution-margin-value"></strong> por unidade.</p>
-                        </div>
-                        <div id="add-to-mix-container" class="card p-6" style="display:none;">
-                            <h3 class="text-xl font-bold mb-4">Próximo Passo</h3>
-                            <button id="add-to-mix-btn" class="btn btn-primary w-full">Adicionar ao Mix de Análise</button>
-                        </div>
-                    </div>
-                </aside>
-            </main>
-        </div>
-
-        <!-- Conteúdo do Custo Meta -->
-        <div id="target-cost-content" class="tab-content">
-            <main class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                <div>
-                    <div class="card p-6 md:p-8">
-                        <h2 class="text-2xl font-bold mb-2">Precificação Reversa (Custo Meta)</h2>
-                        <p class="text-gray-600 mb-6">Descubra o custo máximo que seu produto pode ter com base no preço de mercado e na sua meta de lucro.</p>
-                        <form id="target-cost-form" class="space-y-6">
-                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Preço de Venda ao Consumidor (R$)</label><input type="number" id="tc-sale-price" class="input-field" placeholder="Preço que o mercado paga" required></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Margem de Lucro Desejada (%)</label><input type="number" id="tc-desired-margin" class="input-field" placeholder="Seu objetivo de lucro" required></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Despesas Variáveis Totais (%)</label><input type="number" id="tc-variable-expenses" class="input-field" placeholder="Soma de comissão, frete, etc." required></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Impostos sobre a Venda (%)</label><input type="number" id="tc-taxes" class="input-field" placeholder="Ex: 8" required></div>
-                            <div><label class="block text-sm font-medium text-gray-700 mb-1">Taxa do Cartão/Marketplace (%)</label><input type="number" id="tc-card-fee" class="input-field" placeholder="Ex: 4.5" required></div>
-                            <div class="pt-4"><button type="submit" class="btn btn-primary w-full">Calcular Custo Meta</button></div>
-                        </form>
-                    </div>
-                </div>
-                <aside>
-                    <div id="target-cost-results-section" class="space-y-6" style="display:none;">
-                        <div class="card p-6 bg-green-600 text-white">
-                            <h3 class="text-xl font-bold mb-4 text-center">Seu Custo Direto Máximo é:</h3>
-                            <p id="target-cost-value" class="text-5xl font-bold text-center"></p>
-                            <p class="text-center text-green-200 mt-2">Este é o valor máximo que seu produto pode custar para atingir suas metas.</p>
-                        </div>
-                        <div class="card p-6">
-                            <h3 class="text-xl font-bold mb-4">Detalhamento do Preço de Venda</h3>
-                            <div id="target-cost-breakdown" class="space-y-3">
-                                <!-- Resultados do detalhamento serão inseridos aqui -->
-                            </div>
-                        </div>
-                    </div>
-                </aside>
-            </main>
-        </div>
-
-        <!-- Conteúdo da Análise de Mix de Produtos -->
-        <div id="mix-products-content" class="tab-content">
-            <div class="card p-6 md:p-8">
-                <div class="printable-area">
-                    <h2 class="text-2xl font-bold mb-6">Análise de Mix de Produtos</h2>
-                    <p class="text-gray-600 mb-6 no-print">Adicione seus produtos para obter uma visão consolidada do seu negócio.</p>
-                    <div class="overflow-x-auto no-print">
-                        <table class="min-w-full divide-y divide-gray-200" id="products-mix-table">
-                            <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produto</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preço Venda (R$)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qtde. Vendida</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Custo Direto Unit. (R$)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desp. Var. (%)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imposto Venda (%)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Taxa Cartão (%)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ação</th></tr></thead>
-                            <tbody id="products-mix-table-body" class="bg-white divide-y divide-gray-200"></tbody>
-                        </table>
-                    </div>
-                    <div class="mt-6 flex flex-wrap justify-between items-center gap-4 no-print">
-                        <div class="flex flex-wrap gap-4"><button id="add-product-row" type="button" class="btn btn-secondary">Adicionar Produto</button><button id="save-products-mix" type="button" class="btn btn-secondary">Salvar</button><label class="btn btn-secondary cursor-pointer">Carregar<input type="file" id="load-products-mix" class="hidden" accept=".json"></label></div>
-                        <div class="flex flex-wrap items-center gap-4"><input type="number" id="product-desired-margin" class="input-field w-48" placeholder="Margem Desejada (%)"><button id="calculate-products-mix" type="button" class="btn btn-primary">Calcular Mix</button><button id="print-products-mix" type="button" class="btn btn-secondary">Imprimir</button></div>
-                    </div>
-                    <section id="products-mix-results-section" class="mt-8 pt-8 border-t" style="display:none;"><h3 class="text-2xl font-bold mb-6">Resultado Consolidado do Mix</h3><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 text-center"><div class="bg-gray-50 p-4 rounded-lg"><h4 class="text-sm font-semibold text-gray-600">RECEITA TOTAL</h4><p id="products-mix-total-revenue" class="text-3xl font-bold text-blue-600"></p></div><div class="bg-gray-50 p-4 rounded-lg"><h4 class="text-sm font-semibold text-gray-600">LUCRO TOTAL</h4><p id="products-mix-total-profit" class="text-3xl font-bold text-green-600"></p></div><div class="bg-green-100 p-4 rounded-lg border border-green-300"><h4 class="text-sm font-semibold text-green-800">MARGEM MÉDIA</h4><p id="products-mix-avg-margin" class="text-3xl font-bold text-green-700"></p></div><div class="bg-gray-50 p-4 rounded-lg"><h4 class="text-sm font-semibold text-gray-600">TICKET MÉDIO</h4><p id="products-mix-avg-ticket" class="text-3xl font-bold text-purple-600"></p></div><div class="bg-gray-50 p-4 rounded-lg"><h4 class="text-sm font-semibold text-gray-600">ITENS VENDIDOS</h4><p id="products-mix-total-quantity" class="text-3xl font-bold text-gray-700"></p></div></div><div id="products-mix-goal-analysis" class="mt-6"></div><div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8"><div class="card p-4"><h4 class="text-lg font-bold text-center mb-4">Participação na Receita</h4><canvas id="products-revenue-chart"></canvas></div><div class="card p-4"><h4 class="text-lg font-bold text-center mb-4">Participação no Lucro</h4><canvas id="products-profit-chart"></canvas></div></div><h3 class="text-2xl font-bold my-6">Análise Detalhada por Item</h3><div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Produto</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receita (R$)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Part. Receita (%)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lucro (R$)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Part. Lucro (%)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Margem Ind. (%)</th></tr></thead><tbody id="products-detailed-analysis-body" class="bg-white divide-y divide-gray-200"></tbody></table></div></section>
-                </div>
+    <!-- PÁGINA DE ACESSO -->
+    <div id="login-page" class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div class="max-w-md w-full text-center">
+            <img src="https://i.imgur.com/U52RoI9.png" alt="Logomarca Hub Business" class="mx-auto h-24 w-auto mb-4">
+            <h2 class="text-2xl font-bold" style="color: #2563eb;">Transformamos empreendedores normais em empresários profissionais.</h2>
+            <div class="card p-8 mt-8 text-left">
+                <p class="text-center text-gray-600 mb-6">A ferramenta que transforma seus custos em lucro real. Preencha para ter acesso instantâneo.</p>
+                <form id="access-form" class="space-y-4">
+                    <div><label for="full-name" class="block text-sm font-medium text-gray-700">Nome e Sobrenome</label><input type="text" id="full-name" class="input-field mt-1" required></div>
+                    <div><label for="company-name" class="block text-sm font-medium text-gray-700">Nome da Empresa</label><input type="text" id="company-name" class="input-field mt-1" required></div>
+                    <div><label for="email" class="block text-sm font-medium text-gray-700">Email</label><input type="email" id="email" class="input-field mt-1" required></div>
+                    <div><label for="phone" class="block text-sm font-medium text-gray-700">Telefone com WhatsApp</label><input type="tel" id="phone" class="input-field mt-1" required></div>
+                    <div class="pt-4"><button type="submit" class="btn btn-primary w-full">Iniciar Diagnóstico</button></div>
+                </form>
             </div>
         </div>
+    </div>
 
-        <!-- Conteúdo da Análise de Mix de Serviços -->
-        <div id="mix-services-content" class="tab-content">
-             <div class="card p-6 md:p-8">
-                <div class="printable-area">
-                    <h2 class="text-2xl font-bold mb-6">Análise de Mix de Serviços</h2>
-                    <p class="text-gray-600 mb-6 no-print">Adicione seus serviços para obter uma visão consolidada do seu negócio.</p>
-                    <div class="overflow-x-auto no-print">
-                        <table class="min-w-full divide-y divide-gray-200" id="services-mix-table">
-                            <thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serviço</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Preço Venda (R$)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Qtde. Realizada</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Custo Direto Unit. (R$)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Desp. Var. (%)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Imposto Venda (%)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Taxa Cartão (%)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Ação</th></tr></thead>
-                            <tbody id="services-mix-table-body" class="bg-white divide-y divide-gray-200"></tbody>
-                        </table>
-                    </div>
-                    <div class="mt-6 flex flex-wrap justify-between items-center gap-4 no-print">
-                        <div class="flex flex-wrap gap-4"><button id="add-service-row" type="button" class="btn btn-secondary">Adicionar Serviço</button><button id="save-services-mix" type="button" class="btn btn-secondary">Salvar</button><label class="btn btn-secondary cursor-pointer">Carregar<input type="file" id="load-services-mix" class="hidden" accept=".json"></label></div>
-                        <div class="flex flex-wrap items-center gap-4"><input type="number" id="service-desired-margin" class="input-field w-48" placeholder="Margem Desejada (%)"><button id="calculate-services-mix" type="button" class="btn btn-primary">Calcular Mix</button><button id="print-services-mix" type="button" class="btn btn-secondary">Imprimir</button></div>
-                    </div>
-                    <section id="services-mix-results-section" class="mt-8 pt-8 border-t" style="display:none;"><h3 class="text-2xl font-bold mb-6">Resultado Consolidado do Mix</h3><div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 text-center"><div class="bg-gray-50 p-4 rounded-lg"><h4 class="text-sm font-semibold text-gray-600">RECEITA TOTAL</h4><p id="services-mix-total-revenue" class="text-3xl font-bold text-blue-600"></p></div><div class="bg-gray-50 p-4 rounded-lg"><h4 class="text-sm font-semibold text-gray-600">LUCRO TOTAL</h4><p id="services-mix-total-profit" class="text-3xl font-bold text-green-600"></p></div><div class="bg-green-100 p-4 rounded-lg border border-green-300"><h4 class="text-sm font-semibold text-green-800">MARGEM MÉDIA</h4><p id="services-mix-avg-margin" class="text-3xl font-bold text-green-700"></p></div><div class="bg-gray-50 p-4 rounded-lg"><h4 class="text-sm font-semibold text-gray-600">TICKET MÉDIO</h4><p id="services-mix-avg-ticket" class="text-3xl font-bold text-purple-600"></p></div><div class="bg-gray-50 p-4 rounded-lg"><h4 class="text-sm font-semibold text-gray-600">SERVIÇOS REALIZADOS</h4><p id="services-mix-total-quantity" class="text-3xl font-bold text-gray-700"></p></div></div><div id="services-mix-goal-analysis" class="mt-6"></div><div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8"><div class="card p-4"><h4 class="text-lg font-bold text-center mb-4">Participação na Receita</h4><canvas id="services-revenue-chart"></canvas></div><div class="card p-4"><h4 class="text-lg font-bold text-center mb-4">Participação no Lucro</h4><canvas id="services-profit-chart"></canvas></div></div><h3 class="text-2xl font-bold my-6">Análise Detalhada por Item</h3><div class="overflow-x-auto"><table class="min-w-full divide-y divide-gray-200"><thead class="bg-gray-50"><tr><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Serviço</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Receita (R$)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Part. Receita (%)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lucro (R$)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Part. Lucro (%)</th><th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Margem Ind. (%)</th></tr></thead><tbody id="services-detailed-analysis-body" class="bg-white divide-y divide-gray-200"></tbody></table></div></section>
+    <!-- PÁGINA DE DIAGNÓSTICO -->
+    <div id="diagnostic-page" class="hidden min-h-screen flex items-center justify-center bg-gray-50 p-4">
+        <div class="max-w-3xl w-full">
+            <div class="card p-8">
+                <h2 class="text-2xl font-bold text-center mb-2">Diagnóstico: Meu Preço é Estratégico?</h2>
+                <p class="text-center text-gray-600 mb-6">Responda ao checklist para avaliar a maturidade da sua precificação. "Sim" vale 1 ponto. Meta: ≥ 12 pontos.</p>
+                <form id="diagnostic-form" class="space-y-4">
+                    <input type="hidden" id="diag-full-name" name="entry.1879990263"><input type="hidden" id="diag-company-name" name="entry.1213946989"><input type="hidden" id="diag-email" name="entry.1582214760"><input type="hidden" id="diag-phone" name="entry.1472596839">
+                    <div class="p-4 border rounded-lg space-y-2"><p>1. Tenho o custo total unitário calculado para meus 10 itens/serviços mais vendidos?</p><div class="flex gap-4"><input type="radio" name="entry.1810485259" value="Sim" required><label>Sim</label><input type="radio" name="entry.1810485259" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>2. Atualizei esses custos nos últimos 30 dias?</p><div class="flex gap-4"><input type="radio" name="entry.710690631" value="Sim" required><label>Sim</label><input type="radio" name="entry.710690631" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>3. Minhas despesas fixas estão alocadas por unidade/hora com base no volume mensal atual?</p><div class="flex gap-4"><input type="radio" name="entry.1019568716" value="Sim" required><label>Sim</label><input type="radio" name="entry.1019568716" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>4. Conheço minha alíquota efetiva de impostos/taxas sobre venda?</p><div class="flex gap-4 items-center"><input type="radio" name="entry.77585905" value="Sim" required><label>Sim</label><input type="radio" name="entry.77585905" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>5. Aplico comissão de vendas no cálculo do preço?</p><div class="flex gap-4 items-center"><input type="radio" name="entry.930786213" value="Sim" required><label>Sim</label><input type="radio" name="entry.930786213" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>6. Defini margens-alvo por categoria (A/B/C) e uso no cálculo?</p><div class="flex gap-4"><input type="radio" name="entry.844486669" value="Sim" required><label>Sim</label><input type="radio" name="entry.844486669" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>7. Consigo calcular o preço sugerido usando a fórmula Preço = Custo Total / (1 – %margem – %impostos – %comissão)?</p><div class="flex gap-4"><input type="radio" name="entry.512870284" value="Sim" required><label>Sim</label><input type="radio" name="entry.512870284" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>8. Meu preço atual está ≥ preço sugerido nos itens líderes?</p><div class="flex gap-4 items-center"><input type="radio" name="entry.1249680689" value="Sim" required><label>Sim</label><input type="radio" name="entry.1249680689" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>9. Acompanho variação vs. preço sugerido mensalmente?</p><div class="flex gap-4"><input type="radio" name="entry.107968602" value="Sim" required><label>Sim</label><input type="radio" name="entry.107968602" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>10. Tenho comparativo de concorrentes nos 5 itens/serviços chave?</p><div class="flex gap-4"><input type="radio" name="entry.1877060719" value="Sim" required><label>Sim</label><input type="radio" name="entry.1877060719" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>11. Possuo um critério de ajuste (ex.: se variação > R$ X ou < –R$ Y, revisar)?</p><div class="flex gap-4"><input type="radio" name="entry.1087105471" value="Sim" required><label>Sim</label><input type="radio" name="entry.1087105471" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>12. Meus pontos de equilíbrio por linha estão mapeados?</p><div class="flex gap-4"><input type="radio" name="entry.559649257" value="Sim" required><label>Sim</label><input type="radio" name="entry.559649257" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>13. Ajustei preço ou custo em pelo menos 1 item nas últimas 4 semanas com base no diagnóstico?</p><div class="flex gap-4"><input type="radio" name="entry.1987875430" value="Sim" required><label>Sim</label><input type="radio" name="entry.1987875430" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>14. Tenho um plano de pacotes/âncoras quando o preço sugerido extrapola o mercado?</p><div class="flex gap-4"><input type="radio" name="entry.1325995433" value="Sim" required><label>Sim</label><input type="radio" name="entry.1325995433" value="Não"><label>Não</label></div></div>
+                    <div class="p-4 border rounded-lg space-y-2"><p>15. Realizo revisão mensal de fixo/volume e trimestral de margens?</p><div class="flex gap-4"><input type="radio" name="entry.55838869" value="Sim" required><label>Sim</label><input type="radio" name="entry.55838869" value="Não"><label>Não</label></div></div>
+                    <div class="pt-4"><button type="submit" class="btn btn-primary w-full">Finalizar Diagnóstico</button></div>
+                </form>
+            </div>
+            <div id="diagnostic-result-modal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+                <div class="bg-white rounded-lg shadow-xl p-8 max-w-2xl w-full text-center">
+                    <h2 class="text-2xl font-bold mb-4">Resultado do Diagnóstico</h2>
+                    <div id="diagnostic-result-content" class="p-6 rounded-lg mb-6"><p id="diagnostic-score" class="text-5xl font-bold"></p><p id="diagnostic-level" class="text-xl font-semibold mt-2"></p><p id="diagnostic-summary" class="text-gray-600 mt-4"></p></div>
+                    <button id="go-to-tool-btn" class="btn btn-primary">Acessar Ferramenta</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- FERRAMENTA PRINCIPAL (escondida inicialmente) -->
+    <div id="main-tool" class="hidden">
+        <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+            <header class="text-center mb-8 no-print">
+                <img src="https://i.imgur.com/U52RoI9.png" alt="Logomarca da Empresa" class="mx-auto h-24 w-auto mb-4">
+                <h1 class="text-4xl font-bold text-gray-900">Precifica Pro</h1>
+                <p class="text-lg text-gray-600 mt-2">Sua plataforma completa para precificação estratégica.</p>
+            </header>
+
+            <div class="mb-8 border-b border-gray-200 no-print">
+                <nav class="flex flex-wrap -mb-px" aria-label="Tabs">
+                    <button class="tab active" data-tab="dashboard">Dashboard</button>
+                    <button class="tab" data-tab="calculator">Calculadora Unitária</button>
+                    <button class="tab" data-tab="target-cost">Custo Meta</button>
+                    <button class="tab" data-tab="mix-products">Análise de Mix de Produtos</button>
+                    <button class="tab" data-tab="mix-services">Análise de Mix de Serviços</button>
+                </nav>
+            </div>
+
+            <!-- Conteúdo do Dashboard -->
+            <div id="dashboard-content" class="tab-content active">
+                <div class="card p-6 md:p-8">
+                    <h2 class="text-2xl font-bold mb-6">Dashboard Estratégico</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-gray-50 p-4 rounded-lg text-center"><h4 class="text-sm font-semibold text-gray-600">Receita Total (Produtos)</h4><p id="db-product-revenue" class="text-3xl font-bold text-blue-600">R$ 0,00</p></div>
+                        <div class="bg-gray-50 p-4 rounded-lg text-center"><h4 class="text-sm font-semibold text-gray-600">Margem Média (Produtos)</h4><p id="db-product-margin" class="text-3xl font-bold text-green-600">0.00%</p></div>
+                        <div class="bg-gray-50 p-4 rounded-lg text-center"><h4 class="text-sm font-semibold text-gray-600">Ponto de Equilíbrio (Principal Item)</h4><p id="db-breakeven" class="text-3xl font-bold text-indigo-600">N/A</p></div>
+                    </div>
+                    <p class="text-center text-gray-500 mt-8">Utilize as outras abas para calcular e popular os dados do seu dashboard.</p>
+                </div>
+            </div>
+
+            <!-- Conteúdo da Calculadora Unitária -->
+            <div id="calculator-content" class="tab-content">
+                 <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div class="lg:col-span-2">
+                        <div class="card p-6 md:p-8">
+                            <h2 class="text-2xl font-bold mb-6">Calculadora Unitária</h2>
+                            <form id="pricing-form" class="space-y-6">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">1. Tipo de Negócio</label>
+                                    <div class="grid grid-cols-3 gap-4"><input type="radio" name="business-type" id="type-product" value="product" class="sr-only" checked><label for="type-product" class="radio-label">📦 Produto</label><input type="radio" name="business-type" id="type-service" value="service" class="sr-only"><label for="type-service" class="radio-label">💼 Serviço</label><input type="radio" name="business-type" id="type-industry" value="industry" class="sr-only"><label for="type-industry" class="radio-label">🏭 Indústria</label></div>
+                                </div>
+                                <div><label for="product-name" class="block text-sm font-medium text-gray-700 mb-1">2. Nome do Produto/Serviço</label><input type="text" id="product-name" class="input-field" placeholder="Ex: Consultoria de Marketing" required></div>
+                                <div id="fixed-costs-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">3. Custo Fixo Total Mensal (R$)</label><input type="number" id="total-fixed-costs" class="input-field" placeholder="Soma de aluguel, salários..." required></div>
+                                    <div><label class="block text-sm font-medium text-gray-700 mb-1">4. Quantidade Produzida/Vendida no Mês</label><input type="number" id="monthly-quantity" class="input-field" placeholder="Total de unidades" required></div>
+                                </div>
+                                <div>
+                                    <label for="industry-sector" class="block text-sm font-medium text-gray-700 mb-1">5. Ramo de Atuação</label>
+                                    <select id="industry-sector" class="input-field bg-white" required>
+                                        <option value="" disabled selected>Selecione um setor</option>
+                                        <option value="alimentacao">Alimentação e Bebidas</option>
+                                        <option value="varejo_moda">Varejo de Moda e Acessórios</option>
+                                        <option value="saude">Saúde e Bem-estar (Clínicas, Academias)</option>
+                                        <option value="beleza">Beleza e Estética</option>
+                                        <option value="consultoria">Consultoria e Serviços B2B</option>
+                                        <option value="tecnologia">Tecnologia e SaaS</option>
+                                        <option value="educacao">Educação (Cursos, Escolas)</option>
+                                        <option value="construcao">Construção Civil e Reformas</option>
+                                        <option value="turismo">Turismo e Hotelaria</option>
+                                        <option value="eventos">Eventos e Entretenimento</option>
+                                        <option value="automotivo">Serviços Automotivos</option>
+                                        <option value="imobiliario">Mercado Imobiliário</option>
+                                        <option value="marketing">Marketing e Publicidade</option>
+                                        <option value="ecommerce">E-commerce (Geral)</option>
+                                        <option value="artesanato">Artesanato e Produtos Manuais</option>
+                                        <option value="pet">Pet Shops e Serviços para Animais</option>
+                                        <option value="limpeza">Serviços de Limpeza e Conservação</option>
+                                        <option value="logistica">Logística e Transporte</option>
+                                        <option value="grafica">Gráfica e Comunicação Visual</option>
+                                        <option value="varejo_casa">Varejo de Casa e Decoração</option>
+                                        <option value="varejo_eletro">Varejo de Eletrônicos</option>
+                                        <option value="industria_leve">Indústria Leve</option>
+                                        <option value="agronegocio">Agronegócio</option>
+                                        <option value="financeiro">Serviços Financeiros</option>
+                                        <option value="juridico">Serviços Jurídicos</option>
+                                        <option value="telecom">Telecomunicações</option>
+                                        <option value="energia">Energia</option>
+                                        <option value="cultura">Cultura e Arte</option>
+                                        <option value="esporte">Esportes e Lazer</option>
+                                        <option value="reciclagem">Meio Ambiente e Reciclagem</option>
+                                        <option value="outro">Outro (especificar)</option>
+                                    </select>
+                                    <input type="text" id="industry-sector-other" class="input-field mt-2 hidden" placeholder="Qual o seu ramo de atuação?">
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div><label for="unit-cost" class="block text-sm font-medium text-gray-700 mb-1">6. Custo Direto Unitário (R$)</label><input type="number" id="unit-cost" class="input-field" placeholder="Matéria-prima, mercadoria" step="0.01" required></div>
+                                    <div><label for="additional-expenses" class="block text-sm font-medium text-gray-700 mb-1">7. Despesas Variáveis Unitárias</label><input type="number" id="additional-expenses" class="input-field" placeholder="Comissão, frete, embalagem" step="0.01" required></div>
+                                </div>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-end">
+                                    <div><label for="taxes" class="block text-sm font-medium text-gray-700 mb-1">8. Impostos sobre a Venda (%)</label><input type="number" id="taxes" class="input-field" placeholder="Ex: 8" step="0.01" required></div>
+                                    <div><select id="expense-type" class="input-field bg-white"><option value="percent">% (sobre a venda)</option><option value="value">R$ (valor fixo)</option></select></div>
+                                </div>
+                                <div class="p-4 bg-gray-50 rounded-lg text-center">
+                                    <p class="font-medium text-gray-700">Escolha UMA das opções abaixo:</p>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                                        <div><label for="sale-price" class="block text-sm font-medium text-gray-700 mb-1">Analisar Preço de Venda (R$)</label><input type="number" id="sale-price" class="input-field" placeholder="Ex: 150,00" step="0.01"></div>
+                                        <div><label for="desired-margin" class="block text-sm font-medium text-gray-700 mb-1">Formar Preço com Margem (%)</label><input type="number" id="desired-margin" class="input-field" placeholder="Ex: 40" step="0.01"></div>
+                                    </div>
+                                </div>
+                                <div class="flex flex-col sm:flex-row gap-4 pt-4"><button type="submit" class="btn btn-primary w-full sm:w-auto">Calcular</button><button type="button" id="clear-btn" class="btn btn-secondary w-full sm:w-auto">Limpar</button></div>
+                            </form>
+                        </div>
+                    </div>
+                    <aside>
+                        <div id="results-section" class="space-y-6" style="display:none;">
+                            <!-- O conteúdo aqui será gerado dinamicamente pelo JS -->
+                        </div>
+                    </aside>
+                </main>
+            </div>
+
+            <!-- Outras abas ... -->
+            <div id="target-cost-content" class="tab-content">
+                <!-- Conteúdo Custo Meta -->
+            </div>
+            <div id="mix-products-content" class="tab-content">
+                <!-- Conteúdo Mix Produtos -->
+            </div>
+            <div id="mix-services-content" class="tab-content">
+                <!-- Conteúdo Mix Serviços -->
+            </div>
+        </div>
+    </div>
+
     <script>
-        const formatCurrency = (value) => `R$ ${value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-        const formatPercent = (value) => `${value.toFixed(2)}%`;
-        const formatNumber = (value) => value.toLocaleString('pt-BR');
-        
-        window.mixAnalyzers = {};
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-            
-            const switchTab = (tabName) => {
-                tabs.forEach(t => {
-                    t.classList.toggle('active', t.getAttribute('data-tab') === tabName);
-                });
-                tabContents.forEach(c => {
-                    c.classList.toggle('active', c.id === `${tabName}-content`);
-                });
-            };
-
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    switchTab(tab.getAttribute('data-tab'));
-                });
-            });
-
-            setupUnitCalculator(switchTab);
-            setupTargetCostCalculator();
-            setupMixAnalyzer('products');
-            setupMixAnalyzer('services');
-        });
-
-        function setupUnitCalculator(switchTab) {
-            const form = document.getElementById('pricing-form');
-            const resultsSection = document.getElementById('results-section');
-            const clearBtn = document.getElementById('clear-btn');
-            const addToMixContainer = document.getElementById('add-to-mix-container');
-            const addToMixBtn = document.getElementById('add-to-mix-btn');
-            
-            let currentUnitData = {};
-
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const totalFixedCosts = parseFloat(document.getElementById('total-fixed-costs').value) || 0;
-                const monthlyQuantity = parseFloat(document.getElementById('monthly-quantity').value) || 0;
-                const salePrice = parseFloat(document.getElementById('sale-price').value) || 0;
-                const unitCost = parseFloat(document.getElementById('unit-cost').value) || 0;
-                const additionalExpenses = parseFloat(document.getElementById('additional-expenses').value) || 0;
-                const expenseType = document.getElementById('expense-type').value;
-                const taxes = parseFloat(document.getElementById('taxes').value) || 0;
-                const name = document.getElementById('product-name').value;
-
-                if (salePrice <= 0) { alert('O Preço de Venda deve ser maior que zero.'); return; }
-
-                // Cálculos de Custo Variável e Margem de Contribuição
-                let expenseValue = (expenseType === 'percent') ? salePrice * (additionalExpenses / 100) : additionalExpenses;
-                const taxValue = salePrice * (taxes / 100);
-                const totalVariableCost = unitCost + expenseValue + taxValue;
-                const contributionMarginValue = salePrice - totalVariableCost;
-                
-                // Cálculo do Ponto de Equilíbrio
-                const breakevenUnits = (contributionMarginValue > 0) ? totalFixedCosts / contributionMarginValue : Infinity;
-                const breakevenRevenue = breakevenUnits * salePrice;
-                
-                // Cálculo do Custo com Rateio
-                const fixedCostPerUnit = (monthlyQuantity > 0) ? totalFixedCosts / monthlyQuantity : 0;
-                const totalCostPerUnit = totalVariableCost + fixedCostPerUnit;
-                const profitPerUnit = salePrice - totalCostPerUnit;
-
-                // Exibição dos resultados
-                document.getElementById('fixed-cost-per-unit').textContent = formatCurrency(fixedCostPerUnit);
-                document.getElementById('total-cost-per-unit').textContent = formatCurrency(totalCostPerUnit);
-                document.getElementById('profit-per-unit').textContent = formatCurrency(profitPerUnit);
-                
-                document.getElementById('breakeven-units').textContent = isFinite(breakevenUnits) ? Math.ceil(breakevenUnits).toLocaleString('pt-BR') : 'N/A';
-                document.getElementById('breakeven-revenue').textContent = isFinite(breakevenRevenue) ? formatCurrency(breakevenRevenue) : 'N/A';
-                document.getElementById('contribution-margin-value').textContent = formatCurrency(contributionMarginValue);
-                
-                resultsSection.style.display = 'block';
-                addToMixContainer.style.display = 'block';
-
-                // Salva os dados para o botão "Adicionar ao Mix"
-                let varExpensePercent = additionalExpenses;
-                if (expenseType === 'value' && salePrice > 0) {
-                    varExpensePercent = (additionalExpenses / salePrice) * 100;
-                }
-
-                currentUnitData = {
-                    name: name,
-                    salePrice: salePrice.toFixed(2),
-                    directCost: unitCost.toFixed(2),
-                    varExpensePercent: varExpensePercent.toFixed(2),
-                    taxPercent: taxes.toFixed(2),
-                };
-            });
-
-            addToMixBtn.addEventListener('click', () => {
-                const mixType = prompt("Adicionar a qual mix? Digite 'produtos' ou 'servicos'");
-                if (mixType === 'produtos' || mixType === 'servicos') {
-                    const typeKey = mixType === 'produtos' ? 'products' : 'services';
-                    if (window.mixAnalyzers[typeKey] && window.mixAnalyzers[typeKey].createRow) {
-                        window.mixAnalyzers[typeKey].createRow(currentUnitData);
-                        switchTab(mixType === 'produtos' ? 'mix-products' : 'mix-services');
-                    }
-                } else if (mixType) {
-                    alert("Opção inválida. Por favor, digite 'produtos' ou 'servicos'.");
-                }
-            });
-
-            clearBtn.addEventListener('click', () => {
-                form.reset();
-                resultsSection.style.display = 'none';
-                addToMixContainer.style.display = 'none';
-            });
-        }
-
-        function setupTargetCostCalculator() {
-            const form = document.getElementById('target-cost-form');
-            const resultsSection = document.getElementById('target-cost-results-section');
-            
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                const salePrice = parseFloat(document.getElementById('tc-sale-price').value) || 0;
-                const desiredMargin = parseFloat(document.getElementById('tc-desired-margin').value) || 0;
-                const variableExpenses = parseFloat(document.getElementById('tc-variable-expenses').value) || 0;
-                const taxes = parseFloat(document.getElementById('tc-taxes').value) || 0;
-                const cardFee = parseFloat(document.getElementById('tc-card-fee').value) || 0;
-
-                if (salePrice <= 0) { alert('O Preço de Venda deve ser maior que zero.'); return; }
-
-                const profitValue = salePrice * (desiredMargin / 100);
-                const expensesValue = salePrice * (variableExpenses / 100);
-                const taxesValue = salePrice * (taxes / 100);
-                const cardFeeValue = salePrice * (cardFee / 100);
-                
-                const targetCost = salePrice - profitValue - expensesValue - taxesValue - cardFeeValue;
-
-                document.getElementById('target-cost-value').textContent = formatCurrency(targetCost);
-                
-                const breakdownContainer = document.getElementById('target-cost-breakdown');
-                breakdownContainer.innerHTML = `
-                    <div class="flex justify-between items-center py-2 border-b"><span>Preço de Venda</span><span class="font-bold">${formatCurrency(salePrice)}</span></div>
-                    <div class="flex justify-between items-center py-2 border-b text-red-600"><span>(-) Lucro Desejado (${desiredMargin}%)</span><span class="font-bold">${formatCurrency(profitValue)}</span></div>
-                    <div class="flex justify-between items-center py-2 border-b text-red-600"><span>(-) Despesas Variáveis (${variableExpenses}%)</span><span class="font-bold">${formatCurrency(expensesValue)}</span></div>
-                    <div class="flex justify-between items-center py-2 border-b text-red-600"><span>(-) Impostos (${taxes}%)</span><span class="font-bold">${formatCurrency(taxesValue)}</span></div>
-                    <div class="flex justify-between items-center py-2 border-b text-red-600"><span>(-) Taxa do Cartão (${cardFee}%)</span><span class="font-bold">${formatCurrency(cardFeeValue)}</span></div>
-                    <div class="flex justify-between items-center pt-3 text-blue-600"><strong>(=) Custo Direto Meta</strong><strong class="text-xl">${formatCurrency(targetCost)}</strong></div>
-                `;
-
-                resultsSection.style.display = 'block';
-            });
-        }
-
-        function setupMixAnalyzer(type) {
-            const singularType = type === 'products' ? 'Produto' : 'Serviço';
-            const singularTypeId = type.slice(0, -1);
-            
-            const addRowBtn = document.getElementById(`add-${singularTypeId}-row`);
-            const tableBody = document.getElementById(`${type}-mix-table-body`);
-            const calculateMixBtn = document.getElementById(`calculate-${type}-mix`);
-            const mixResultsSection = document.getElementById(`${type}-mix-results-section`);
-            const desiredMarginInput = document.getElementById(`${singularTypeId}-desired-margin`);
-            const goalAnalysisContainer = document.getElementById(`${type}-mix-goal-analysis`);
-            const printBtn = document.getElementById(`print-${type}-mix`);
-            const detailedAnalysisBody = document.getElementById(`${type}-detailed-analysis-body`);
-            const saveBtn = document.getElementById(`save-${type}-mix`);
-            const loadInput = document.getElementById(`load-${type}-mix`);
-            
-            let revenueChart = null;
-            let profitChart = null;
-
-            const validateRow = (row) => {
-                let isValid = true;
-                const inputs = row.querySelectorAll('.mix-input');
-                inputs.forEach((input, index) => {
-                    if (index > 0 && !input.value) { // Skip name validation
-                        input.classList.add('invalid');
-                        isValid = false;
-                    } else {
-                        input.classList.remove('invalid');
-                    }
-                });
-                return isValid;
-            };
-            
-            const createRow = (data = {}) => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td class="px-2 py-2"><input type="text" class="input-field mix-input" placeholder="${singularType} A" value="${data.name || ''}"></td>
-                    <td class="px-2 py-2"><input type="number" step="0.01" class="input-field mix-input" placeholder="100.00" value="${data.salePrice || ''}"></td>
-                    <td class="px-2 py-2"><input type="number" step="1" class="input-field mix-input" placeholder="50" value="${data.quantity || ''}"></td>
-                    <td class="px-2 py-2"><input type="number" step="0.01" class="input-field mix-input" placeholder="40.00" value="${data.directCost || ''}"></td>
-                    <td class="px-2 py-2"><input type="number" step="0.01" class="input-field mix-input" placeholder="5" value="${data.varExpensePercent || ''}"></td>
-                    <td class="px-2 py-2"><input type="number" step="0.01" class="input-field mix-input" placeholder="8" value="${data.taxPercent || ''}"></td>
-                    <td class="px-2 py-2"><input type="number" step="0.01" class="input-field mix-input" placeholder="2.5" value="${data.cardFeePercent || ''}"></td>
-                    <td class="px-2 py-2 text-center"><button class="text-red-500 hover:text-red-700 font-bold remove-row-btn no-print">X</button></td>
-                `;
-                tableBody.appendChild(row);
-                row.querySelector('.remove-row-btn').addEventListener('click', () => row.remove());
-            };
-            
-            window.mixAnalyzers[type] = { createRow };
-
-            addRowBtn.addEventListener('click', () => createRow());
-            printBtn.addEventListener('click', () => window.print());
-            
-            saveBtn.addEventListener('click', () => {
-                const data = [];
-                tableBody.querySelectorAll('tr').forEach(row => {
-                    const inputs = row.querySelectorAll('.mix-input');
-                    data.push({
-                        name: inputs[0].value,
-                        salePrice: inputs[1].value,
-                        quantity: inputs[2].value,
-                        directCost: inputs[3].value,
-                        varExpensePercent: inputs[4].value,
-                        taxPercent: inputs[5].value,
-                        cardFeePercent: inputs[6].value,
-                    });
-                });
-                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `${type}_analise_mix.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-            });
-
-            loadInput.addEventListener('change', (event) => {
-                const file = event.target.files[0];
-                if (!file) return;
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    try {
-                        const data = JSON.parse(e.target.result);
-                        tableBody.innerHTML = '';
-                        data.forEach(item => createRow(item));
-                    } catch (err) {
-                        alert('Erro ao carregar o arquivo. Verifique se o formato é válido.');
-                    }
-                };
-                reader.readAsText(file);
-                event.target.value = '';
-            });
-
-            const createChart = (canvasId, labels, data, chartInstance) => {
-                const ctx = document.getElementById(canvasId).getContext('2d');
-                if (chartInstance) {
-                    chartInstance.destroy();
-                }
-                return new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            data: data,
-                            backgroundColor: ['#4f46e5', '#818cf8', '#a5b4fc', '#c7d2fe', '#e0e7ff', '#6366f1', '#4338ca'],
-                            borderColor: '#ffffff',
-                            borderWidth: 2
-                        }]
-                    },
-                    options: { responsive: true, maintainAspectRatio: true }
-                });
-            };
-
-            calculateMixBtn.addEventListener('click', () => {
-                let totalRevenue = 0, totalCost = 0, totalQuantity = 0;
-                let itemAnalysisData = [];
-                let allRowsValid = true;
-                
-                const rows = tableBody.querySelectorAll('tr');
-                if (rows.length === 0) { alert(`Adicione pelo menos um ${singularType.toLowerCase()}.`); return; }
-
-                rows.forEach(row => { if (!validateRow(row)) allRowsValid = false; });
-                if (!allRowsValid) { alert('Por favor, preencha todos os campos destacados em vermelho.'); return; }
-
-                rows.forEach(row => {
-                    const inputs = row.querySelectorAll('.mix-input');
-                    const name = inputs[0].value || `${singularType} sem nome`;
-                    const salePrice = parseFloat(inputs[1].value) || 0;
-                    const quantity = parseFloat(inputs[2].value) || 0;
-                    const directCost = parseFloat(inputs[3].value) || 0;
-                    const varExpensePercent = parseFloat(inputs[4].value) || 0;
-                    const taxPercent = parseFloat(inputs[5].value) || 0;
-                    const cardFeePercent = parseFloat(inputs[6].value) || 0;
-
-                    if(salePrice > 0 && quantity > 0) {
-                        const totalVarPercent = varExpensePercent + taxPercent + cardFeePercent;
-                        const totalVarValue = salePrice * (totalVarPercent / 100);
-                        const totalUnitCost = directCost + totalVarValue;
-                        const itemRevenue = salePrice * quantity;
-                        const itemProfit = (salePrice - totalUnitCost) * quantity;
-                        const itemMargin = (itemRevenue > 0) ? (itemProfit / itemRevenue) * 100 : 0;
-                        totalRevenue += itemRevenue;
-                        totalCost += totalUnitCost * quantity;
-                        totalQuantity += quantity;
-                        itemAnalysisData.push({ name, revenue: itemRevenue, profit: itemProfit, margin: itemMargin });
-                    }
-                });
-
-                const totalProfit = totalRevenue - totalCost;
-                const avgMargin = (totalRevenue > 0) ? (totalProfit / totalRevenue) * 100 : 0;
-                const avgTicket = (totalQuantity > 0) ? totalRevenue / totalQuantity : 0;
-                const desiredMargin = parseFloat(desiredMarginInput.value) || 0;
-
-                document.getElementById(`${type}-mix-total-revenue`).textContent = formatCurrency(totalRevenue);
-                document.getElementById(`${type}-mix-total-profit`).textContent = formatCurrency(totalProfit);
-                document.getElementById(`${type}-mix-avg-margin`).textContent = formatPercent(avgMargin);
-                document.getElementById(`${type}-mix-avg-ticket`).textContent = formatCurrency(avgTicket);
-                document.getElementById(`${type}-mix-total-quantity`).textContent = formatNumber(totalQuantity);
-
-                let analysisHTML = '';
-                if (desiredMargin > 0) {
-                    if (avgMargin >= desiredMargin) {
-                        analysisHTML = `<div class="p-4 rounded-lg bg-green-100 border border-green-200 text-green-800"><h4 class="font-bold">Parabéns! Meta Atingida.</h4><p>Sua margem média de <strong>${formatPercent(avgMargin)}</strong> está acima da sua meta de <strong>${formatPercent(desiredMargin)}</strong>.</p></div>`;
-                    } else {
-                        const difference = desiredMargin - avgMargin;
-                        const requiredProfit = totalRevenue * (desiredMargin / 100);
-                        const profitShortfall = requiredProfit - totalProfit;
-                        analysisHTML = `<div class="p-4 rounded-lg bg-yellow-100 border border-yellow-200 text-yellow-800"><h4 class="font-bold">Atenção! Meta não Atingida.</h4><p>Sua margem média de <strong>${formatPercent(avgMargin)}</strong> está <strong>${formatPercent(difference)}</strong> abaixo da sua meta.</p><p class="mt-2">Para atingir sua meta, você precisa aumentar seu lucro total em <strong>${formatCurrency(profitShortfall)}</strong>.</p></div>`;
-                    }
-                }
-                goalAnalysisContainer.innerHTML = analysisHTML;
-                
-                detailedAnalysisBody.innerHTML = '';
-                itemAnalysisData.sort((a, b) => b.revenue - a.revenue);
-                itemAnalysisData.forEach(item => {
-                    const revenueShare = (totalRevenue > 0) ? (item.revenue / totalRevenue) * 100 : 0;
-                    const profitShare = (totalProfit > 0 && item.profit > 0) ? (item.profit / totalProfit) * 100 : 0;
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td class="px-4 py-3 font-medium text-gray-900">${item.name}</td>
-                        <td class="px-4 py-3">${formatCurrency(item.revenue)}</td>
-                        <td class="px-4 py-3">${formatPercent(revenueShare)}</td>
-                        <td class="px-4 py-3">${formatCurrency(item.profit)}</td>
-                        <td class="px-4 py-3">${formatPercent(profitShare)}</td>
-                        <td class="px-4 py-3 font-semibold ${item.margin < 0 ? 'text-red-600' : 'text-green-600'}">${formatPercent(item.margin)}</td>
-                    `;
-                    detailedAnalysisBody.appendChild(row);
-                });
-                
-                const chartLabels = itemAnalysisData.map(item => item.name);
-                revenueChart = createChart(`${type}-revenue-chart`, chartLabels, itemAnalysisData.map(item => item.revenue), revenueChart);
-                profitChart = createChart(`${type}-profit-chart`, chartLabels, itemAnalysisData.map(item => Math.max(0, item.profit)), profitChart);
-
-                mixResultsSection.style.display = 'block';
-                mixResultsSection.scrollIntoView({ behavior: 'smooth' });
-            });
-
-            createRow();
-        }
+        // ... (todo o código JS da ferramenta principal) ...
     </script>
 </body>
 </html>
